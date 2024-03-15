@@ -83,10 +83,14 @@ app.get('/api/avaliacoes/:provedor', (req, res) => {
       segurancaRede: 0,
     }] });
   }
-
+  const totalAvaliacoes = avaliacoesPorProvedor[provedor].length;
+  const somaTotal = avaliacoesPorProvedor[provedor].reduce((acc, avaliacao) => {
+    return acc + (avaliacao.qualidadeConexao + avaliacao.suporteCliente + avaliacao.coberturaServico + avaliacao.preco + avaliacao.segurancaRede);
+  }, 0);
+  const scoreFinal = somaTotal / (totalAvaliacoes * 5);
   // Retorna as avaliações do provedor
   const avaliacoes = avaliacoesPorProvedor[provedor];
-  res.json({ provedor, avaliacoes });
+  res.json({ provedor, avaliacoes, scoreFinal });
 });
 
 // Inicia o servidor

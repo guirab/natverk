@@ -1,48 +1,84 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { AvaliacaoForm, ScoreDisplay } from "./components";
+import React, { useContext, useEffect, useState } from "react";
+import { AvaliacaoForm } from "./components";
 import { CadastroProvedor } from "./components/cadastroProvedor";
+import { listProvedores } from "./components/listProvedores";
+import { AvaliacoesContext } from "@/store/context";
 
 const HomePage = () => {
   const [provedores, setProvedores] = useState<string[]>([]);
   const [provedorSelecionado, setProvedorSelecionado] = useState<string>("");
-  const [avaliacoes, setAvaliacoes] = useState<AvaliacaoType>({
-    qualidadeConexao: 0,
-    suporteCliente: 0,
-    coberturaServico: 0,
-    preco: 0,
-    segurancaRede: 0,
-  });
+  const [scoreFinal, setScoreFinal] = useState<number>(0);
 
-  const fetchProvedores = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/api/provedores");
-      const data = await response.json();
-      setProvedores(data.provedores.map((p: any) => p));
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { avaliacoes, setAvaliacoes } = useContext(AvaliacoesContext);
 
-  const fetchAvaliacoes = async () => {
+  async function fetchProvedores() {
+    await listProvedores()
+      .then((data: any) => {
+        setProvedores(data.provedores);
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
+  }
+
+  const fetchAvaliacoes = async (provedor: string) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/avaliacoes/:${provedorSelecionado}`
+        `http://localhost:3001/api/avaliacoes/:${provedor}`
       );
       const data = await response.json();
       setAvaliacoes(data.avaliacoes[0]);
+      setProvedorSelecionado(provedor);
+      if (!data.scoreFinal) {
+        setScoreFinal(0);
+        return;
+      }
+      setScoreFinal(data.scoreFinal);
     } catch (error) {
       console.error(error);
     }
   };
+
+  async function calcularScore() {
+    console.count("calcularScore");
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/avaliacoes/:${provedorSelecionado}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(avaliacoes),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Erro ao calcular score");
+      }
+
+      const data = await response.json();
+      setScoreFinal(data.scoreFinal);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const RenderComponents = () => {
     if (!provedorSelecionado) return;
 
     return (
       <>
-        <AvaliacaoForm avaliacoes={avaliacoes} setAvaliacoes={setAvaliacoes} />
-        <ScoreDisplay avaliacoes={avaliacoes} provedor={provedorSelecionado} />
+        <AvaliacaoForm />
+        <div className="h-[10%] w-full flex justify-center">
+          <h2>Score Calculado:</h2>
+          <p>
+            {scoreFinal !== 0 && scoreFinal !== null
+              ? scoreFinal.toFixed(2)
+              : 0}
+          </p>
+        </div>
       </>
     );
   };
@@ -52,9 +88,8 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    if (!provedorSelecionado) return;
-    fetchAvaliacoes();
-  }, [provedorSelecionado]);
+    calcularScore();
+  }, [avaliacoes]);
 
   return (
     <div className="h-screen w-screen overflow-hidden">
@@ -66,7 +101,7 @@ const HomePage = () => {
             {provedores.map((provedor) => (
               <p
                 key={provedor}
-                onClick={() => setProvedorSelecionado(provedor)}
+                onClick={() => fetchAvaliacoes(provedor)}
                 className="text-blue-500 cursor-pointer"
               >
                 {provedor}
@@ -75,7 +110,6 @@ const HomePage = () => {
           </div>
         )}
         <RenderComponents />
-        <button onClick={() => setProvedorSelecionado("")}>desdarle</button>
       </div>
     </div>
   );

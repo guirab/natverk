@@ -6,7 +6,7 @@ type AvaliacaoType = {
   segurancaRede: number;
 }
 
-type AvaliacaoFormProps = {
+type AvaliacoesContext = {
   avaliacoes: AvaliacaoType;
   setAvaliacoes: React.Dispatch<React.SetStateAction<AvaliacaoType>>;
 }

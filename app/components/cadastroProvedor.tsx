@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const CadastroProvedor = ({
   fetchProvedores,
@@ -29,7 +29,7 @@ export const CadastroProvedor = ({
   };
 
   return (
-    <div className="h-[10%] w-[50%] flex flex-col">
+    <div className="w-[50%] flex flex-col">
       <label htmlFor="nome">Cadastrar Provedor</label>
       <input
         type="text"

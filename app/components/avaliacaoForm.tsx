@@ -1,18 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactStars from "react-stars";
 
 import { Card } from ".";
+import { AvaliacoesContext } from "@/store/context";
 
-export const AvaliacaoForm = ({
-  avaliacoes,
-  setAvaliacoes,
-}: AvaliacaoFormProps) => {
+export const AvaliacaoForm = () => {
+  const { avaliacoes, setAvaliacoes } = useContext(AvaliacoesContext);
+
   const handleInputChange = (value: number, name: string) => {
     setAvaliacoes({ ...avaliacoes, [name]: value });
   };
 
   return (
-    <div className="h-[70%] w-full">
+    <div className="h-[40%] w-full">
       <h1 className="text-center text-2xl m-4">Insira suas avaliações:</h1>
       <div className="flex justify-center text-left w-full gap-2">
         <Card id="qualidadeConexao" title="Qualidade da Conexão:">
