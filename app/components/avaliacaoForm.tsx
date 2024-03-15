@@ -1,80 +1,74 @@
 import React from "react";
+import ReactStars from "react-stars";
+
 import { Card } from ".";
 
 export const AvaliacaoForm = ({
   avaliacoes,
   setAvaliacoes,
 }: AvaliacaoFormProps) => {
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setAvaliacoes({ ...avaliacoes, [name]: parseInt(value) });
+  const handleInputChange = (value: number, name: string) => {
+    setAvaliacoes({ ...avaliacoes, [name]: value });
   };
 
-  // utilizar ReactStars
-
   return (
-    <div className="h-[80%] w-full p-10">
+    <div className="h-[70%] w-full">
       <h1 className="text-center text-2xl m-4">Insira suas avaliações:</h1>
       <div className="flex justify-center text-left w-full gap-2">
         <Card id="qualidadeConexao" title="Qualidade da Conexão:">
-          <input
-            type="number"
-            name="qualidadeConexao"
-            id="qualidadeConexao"
-            min="1"
-            max="5"
+          <ReactStars
+            count={5}
+            size={24}
+            half={false}
+            color2={"#ffd700"}
             value={avaliacoes.qualidadeConexao}
-            onChange={handleInputChange}
+            onChange={(e) => handleInputChange(e, "qualidadeConexao")}
           />
         </Card>
 
         <Card id="suporteCliente" title="Suporte ao Cliente:">
-          <input
-            type="number"
-            name="suporteCliente"
-            id="suporteCliente"
-            min="1"
-            max="5"
+          <ReactStars
+            count={5}
+            size={24}
+            half={false}
+            color2={"#ffd700"}
             value={avaliacoes.suporteCliente}
-            onChange={handleInputChange}
+            onChange={(e) => handleInputChange(e, "suporteCliente")}
           />
         </Card>
 
         <Card id="coberturaServico" title="Cobertura do Serviço:">
-          <input
-            type="number"
-            name="coberturaServico"
-            id="coberturaServico"
-            min="1"
-            max="5"
+          <ReactStars
+            count={5}
+            size={24}
+            half={false}
+            color2={"#ffd700"}
             value={avaliacoes.coberturaServico}
-            onChange={handleInputChange}
+            onChange={(e) => handleInputChange(e, "coberturaServico")}
           />
         </Card>
       </div>
 
       <div className="flex w-full justify-center gap-2 mt-2">
         <Card id="preco" title="Preço:">
-          <input
-            type="number"
-            name="preco"
-            id="preco"
-            min="1"
-            max="5"
+          <ReactStars
+            count={5}
+            size={24}
+            half={false}
+            color2={"#ffd700"}
             value={avaliacoes.preco}
-            onChange={handleInputChange}
+            onChange={(e) => handleInputChange(e, "preco")}
           />
         </Card>
 
         <Card id="segurancaRede" title="Segurança da Rede:">
-          <input
-            type="number"
-            name="segurancaRede"
-            id="segurancaRede"
-            min="1"
-            max="5"
+          <ReactStars
+            count={5}
+            size={24}
+            half={false}
+            color2={"#ffd700"}
             value={avaliacoes.segurancaRede}
-            onChange={handleInputChange}
+            onChange={(e) => handleInputChange(e, "segurancaRede")}
           />
         </Card>
       </div>
